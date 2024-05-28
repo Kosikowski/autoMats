@@ -5,10 +5,10 @@
 //  Created by Mateusz Kosikowski on 23/05/2024.
 //
 
-import SwiftDiagnostics
-import SwiftSyntax
-import SwiftSyntaxMacroExpansion
-import SwiftSyntaxMacros
+internal import SwiftDiagnostics
+internal import SwiftSyntax
+internal import SwiftSyntaxMacroExpansion
+internal import SwiftSyntaxMacros
 
 class TestBodyAnalyser: SyntaxVisitor {
     private var diagnostics: [Diagnostic] = []
@@ -54,7 +54,7 @@ class TestBodyAnalyser: SyntaxVisitor {
         return .visitChildren
     }
 
-    func analise<Tree: SyntaxProtocol>(_ tree: Tree) -> ([Diagnostic], Set<String>) {
+    func analise(_ tree: some SyntaxProtocol) -> ([Diagnostic], Set<String>) {
         walk(tree)
         print(sutCalls, diagnostics.count)
         return (diagnostics, sutCalls)

@@ -6,10 +6,10 @@
 //
 
 import Foundation
-import SwiftDiagnostics
-import SwiftSyntax
-import SwiftSyntaxMacroExpansion
-import SwiftSyntaxMacros
+internal import SwiftDiagnostics
+public import SwiftSyntax
+internal import SwiftSyntaxMacroExpansion
+public import SwiftSyntaxMacros
 
 public struct CleanTest: MemberAttributeMacro {
     public static func expansion(
@@ -168,8 +168,9 @@ public struct CleanTest: MemberAttributeMacro {
         in context: some MacroExpansionContext
     ) {
         if let sutType = declaration.variableDecls.identifiableNames["sut"] {
-            if let sutTypeFromClassName = declaration.typeName?.deletingSuffix("Tests"),
-               sutType != "\(sutTypeFromClassName)!" // Assuming implicitly unwrapped
+            if
+                let sutTypeFromClassName = declaration.typeName?.deletingSuffix("Tests"),
+                sutType != "\(sutTypeFromClassName)!" // Assuming implicitly unwrapped
             {
                 context.diagnose(
                     Diagnostic(
@@ -197,8 +198,8 @@ public struct CleanTest: MemberAttributeMacro {
     }
 }
 
-private extension [VariableDeclSyntax] {
-    var identifiableNames: [String: String?] {
+extension [VariableDeclSyntax] {
+    fileprivate var identifiableNames: [String: String?] {
         /// ### Possible types:
         ///
         /// - ``ArrayTypeSyntax``
@@ -220,7 +221,7 @@ private extension [VariableDeclSyntax] {
         /// - ``SuppressedTypeSyntax``
         /// - ``TupleTypeSyntax``
 
-        let bindings = self.flatMap { $0.bindings }
+        let bindings = self.flatMap(\.bindings)
 
         var _names: [String: String] = [:]
 

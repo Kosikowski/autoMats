@@ -30,7 +30,8 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            ]
+            ],
+            swiftSettings: [.enableExperimentalFeature("AccessLevelOnImport"), .enableExperimentalFeature("InternalImportsByDefault")]
         ),
         // Library that exposes a macro as part of its API, which is used in client programs.
         .target(name: "autoMats", dependencies: ["autoMatsMacros"]),

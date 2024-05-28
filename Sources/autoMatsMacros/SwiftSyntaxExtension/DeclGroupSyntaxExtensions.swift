@@ -5,7 +5,7 @@
 //  Created by Mateusz Kosikowski on 19/05/2024.
 //
 
-import SwiftSyntax
+internal import SwiftSyntax
 
 extension DeclGroupSyntax {
     var isClassDecl: Bool {

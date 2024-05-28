@@ -5,10 +5,10 @@
 //  Created by Mateusz Kosikowski on 27/05/2024.
 //
 
-import SwiftDiagnostics
-import SwiftSyntax
-import SwiftSyntaxMacroExpansion
-import SwiftSyntaxMacros
+internal import SwiftDiagnostics
+internal import SwiftSyntax
+internal import SwiftSyntaxMacroExpansion
+internal import SwiftSyntaxMacros
 
 class ClassMembersOrderAnalyser: SyntaxVisitor {
     private var diagnostics: [Diagnostic] = []
@@ -52,7 +52,7 @@ class ClassMembersOrderAnalyser: SyntaxVisitor {
         return .skipChildren
     }
 
-    func analise<Tree: SyntaxProtocol>(_ tree: Tree) -> [Diagnostic] {
+    func analise(_ tree: some SyntaxProtocol) -> [Diagnostic] {
         walk(tree)
         return diagnostics
     }

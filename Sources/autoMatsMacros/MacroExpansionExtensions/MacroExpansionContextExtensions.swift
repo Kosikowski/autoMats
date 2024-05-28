@@ -5,8 +5,8 @@
 //  Created by Mateusz Kosikowski on 27/05/2024.
 //
 
-import SwiftDiagnostics
-import SwiftSyntaxMacros
+internal import SwiftDiagnostics
+internal import SwiftSyntaxMacros
 
 extension MacroExpansionContext {
     func diagnose(_ diagnostics: [Diagnostic]) {
