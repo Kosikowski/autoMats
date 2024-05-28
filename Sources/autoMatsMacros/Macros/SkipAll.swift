@@ -5,13 +5,12 @@
 //  Created by Mateusz Kosikowski on 22/05/2024.
 //
 
-internal import Foundation
 internal import SwiftCompilerPlugin
 internal import SwiftDiagnostics
-internal import SwiftSyntax
-internal import SwiftSyntaxMacros
+public import SwiftSyntax
+public import SwiftSyntaxMacros
 
-@_spi(ExperimentalLanguageFeature) import SwiftSyntaxMacros
+@_spi(ExperimentalLanguageFeature) public import SwiftSyntaxMacros
 
 @_spi(ExperimentalLanguageFeature)
 public struct SkipAll: MemberAttributeMacro {

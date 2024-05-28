@@ -5,7 +5,7 @@
 //  Created by Mateusz Kosikowski on 27/05/2024.
 //
 
-import Foundation
+internal import Foundation
 internal import SwiftDiagnostics
 public import SwiftSyntax
 internal import SwiftSyntaxMacroExpansion
