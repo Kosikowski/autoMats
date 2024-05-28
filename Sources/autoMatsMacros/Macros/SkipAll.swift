@@ -5,11 +5,11 @@
 //  Created by Mateusz Kosikowski on 22/05/2024.
 //
 
-import Foundation
-import SwiftCompilerPlugin
-import SwiftDiagnostics
-import SwiftSyntax
-import SwiftSyntaxMacros
+internal import Foundation
+internal import SwiftCompilerPlugin
+internal import SwiftDiagnostics
+internal import SwiftSyntax
+internal import SwiftSyntaxMacros
 
 @_spi(ExperimentalLanguageFeature) import SwiftSyntaxMacros
 

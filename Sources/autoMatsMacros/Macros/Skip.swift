@@ -5,13 +5,13 @@
 //  Created by Mateusz Kosikowski on 21/05/2024.
 //
 
-import Foundation
-import SwiftCompilerPlugin
-import SwiftDiagnostics
-import SwiftSyntax
-import SwiftSyntaxBuilder
-import SwiftSyntaxMacros
-@_spi(ExperimentalLanguageFeature) import SwiftSyntaxMacros
+internal import Foundation
+internal import SwiftCompilerPlugin
+internal import SwiftDiagnostics
+internal import SwiftSyntax
+internal import SwiftSyntaxBuilder
+public import SwiftSyntaxMacros
+@_spi(ExperimentalLanguageFeature) public import SwiftSyntaxMacros
 
 @_spi(ExperimentalLanguageFeature)
 public struct Skip: PreambleMacro {
@@ -40,11 +40,10 @@ public struct Skip: PreambleMacro {
         }
 
         if funcDecl.signature.effectSpecifiers?.throwsClause?.throwsSpecifier == nil {
-            let newEffects: FunctionEffectSpecifiersSyntax
-            if let existingEffects = funcDecl.signature.effectSpecifiers {
-                newEffects = existingEffects.with(\.throwsClause, ThrowsClauseSyntax(throwsSpecifier: .keyword(.throws)))
+            let newEffects: FunctionEffectSpecifiersSyntax = if let existingEffects = funcDecl.signature.effectSpecifiers {
+                existingEffects.with(\.throwsClause, ThrowsClauseSyntax(throwsSpecifier: .keyword(.throws)))
             } else {
-                newEffects = FunctionEffectSpecifiersSyntax(throwsClause: ThrowsClauseSyntax(throwsSpecifier: .keyword(.throws)))
+                FunctionEffectSpecifiersSyntax(throwsClause: ThrowsClauseSyntax(throwsSpecifier: .keyword(.throws)))
             }
 
             let newSignature = funcDecl.signature.with(\.effectSpecifiers, newEffects)
