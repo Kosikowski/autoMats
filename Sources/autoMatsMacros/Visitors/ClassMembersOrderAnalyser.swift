@@ -13,10 +13,11 @@ internal import SwiftSyntaxMacros
 class ClassMembersOrderAnalyser: SyntaxVisitor {
     private var diagnostics: [Diagnostic] = []
     private var lastMARKSection: String? = nil
+    private var seenFunction = false
 
     override func visit(_ decl: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
         findMarkComment(for: decl)
-        if lastMARKSection != nil {
+        if lastMARKSection != nil || seenFunction {
             diagnostics.append(Diagnostic(
                 node: decl,
                 message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("All variables should be declared at the beginning of the class.")
@@ -27,6 +28,7 @@ class ClassMembersOrderAnalyser: SyntaxVisitor {
 
     override func visit(_ decl: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
         findMarkComment(for: decl)
+        seenFunction = true
         let components = decl.name.text.components(separatedBy: "_")
         if components.first == "test" {
             if
