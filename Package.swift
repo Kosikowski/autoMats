@@ -34,7 +34,11 @@ let package = Package(
             swiftSettings: [.enableExperimentalFeature("AccessLevelOnImport"), .enableExperimentalFeature("InternalImportsByDefault")]
         ),
         // Library that exposes a macro as part of its API, which is used in client programs.
-        .target(name: "autoMats", dependencies: ["autoMatsMacros"]),
+        .target(
+            name: "autoMats",
+            dependencies: ["autoMatsMacros"],
+            swiftSettings: [.enableExperimentalFeature("AccessLevelOnImport")]
+        ),
 
         // A client of the library, which is able to use the macro in its own code.
         .executableTarget(name: "amc", dependencies: [
@@ -48,7 +52,8 @@ let package = Package(
             dependencies: [
                 "autoMatsMacros",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-            ]
+            ],
+            swiftSettings: [.enableExperimentalFeature("AccessLevelOnImport")]
         ),
     ]
 )
