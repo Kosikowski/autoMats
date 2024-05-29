@@ -92,20 +92,18 @@ public struct CleanTest: MemberAttributeMacro {
         of declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) {
-        guard declaration.inheritanceClause?.inheritanceTypeNames.contains("XCTestCase") == false else {
-            return
-        }
-
-        guard let name = declaration.typeName else {
-            return
-        }
-
-        context.diagnose(
-            Diagnostic(
-                node: declaration,
-                message: SwiftSyntaxMacros.MacroExpansionErrorMessage("A test class \(name) must inherit from XCTestCase.")
+        guard
+            let inheritanceClause = declaration.inheritanceClause,
+            inheritanceClause.inheritanceTypeNames.contains("XCTestCase")
+        else {
+            context.diagnose(
+                Diagnostic(
+                    node: declaration,
+                    message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("A test class \(declaration.typeName!) must inherit from XCTestCase.")
+                )
             )
-        )
+            return
+        }
     }
 
     static func validateFileName(
