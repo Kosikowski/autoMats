@@ -5,10 +5,10 @@
 //  Created by Mateusz Kosikowski on 23/05/2024.
 //
 
-import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
-import XCTest
-@testable import autoMatsMacros
+internal import SwiftSyntaxMacros
+internal import SwiftSyntaxMacrosTestSupport
+internal import XCTest
+@testable internal import autoMatsMacros
 
 class CleanTestTests: XCTestCase {
     func test_emptyClassDeclaration() throws {
