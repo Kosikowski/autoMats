@@ -56,7 +56,6 @@ class TestBodyAnalyser: SyntaxVisitor {
 
     func analise(_ tree: some SyntaxProtocol) -> ([Diagnostic], Set<String>) {
         walk(tree)
-        print(sutCalls, diagnostics.count)
         return (diagnostics, sutCalls)
     }
 }
