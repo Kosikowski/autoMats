@@ -5,10 +5,10 @@
 //  Created by Mateusz Kosikowski on 23/05/2024.
 //
 
-import SwiftParser
-import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
-import XCTest
+internal import SwiftParser
+internal import SwiftSyntaxMacros
+internal import SwiftSyntaxMacrosTestSupport
+internal import XCTest
 @testable import autoMatsMacros
 
 class TestBodyAnalyserTests: XCTestCase {
