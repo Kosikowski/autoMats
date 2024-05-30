@@ -42,12 +42,25 @@ public import SwiftSyntaxMacros
 /// to ensure compliance with the outlined best practices.
 ///
 public struct CleanTest: MemberAttributeMacro {
+    
+    /// Validate and process the declaration block for the `@CleanTest` macro.
+    /// - Parameters:
+    ///   - declaration: The declaration group syntax node representing the test class or extension.
+    ///   - member: The member syntax node for which the `@CleanTest` macro is applied.
+    ///   - node: The attribute syntax node for the `@CleanTest` macro.
+    ///   - context: The macro expansion context.
+    /// - Returns: An array of attribute syntax nodes.
     public static func expansion(
         of node: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,
         providingAttributesFor member: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [AttributeSyntax] {
+
+        // Ensure that the member being processed matches the first member in the declaration block.
+        // This check is necessary because this macro is invoked for every member of the class.
+        // We perform validation for the entire class as soon as this method is invoked for the first
+        // member in the declaration.
         guard
             let decl = declaration.memberBlock.members.first?.decl,
             decl.description == member.description
@@ -55,21 +68,32 @@ public struct CleanTest: MemberAttributeMacro {
             return []
         }
 
+        // Check if the declaration is an extension or a class declaration
         if declaration.isExtensionDecl {
+            // If it's an extension, validate the extension declaration
             validateExtensionDeclaration(declaration.as(ExtensionDeclSyntax.self)!, in: context)
         } else if declaration.isClassDecl {
+            // If it's a class declaration, validate the class declaration
             validateClassDeclaration(declaration.as(ClassDeclSyntax.self)!, in: context)
         } else {
+            // If it's neither an extension nor a class declaration, raise a diagnostic error
             context.diagnose(Diagnostic(
                 node: node,
                 message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("@CleanTest can only be used in class declarations subclassing XCTestCase, or extensions.")
             ))
         }
+        
+        // Return empty array, as this macro is diagnostic macro only and it does not generate any code.
         return []
     }
 
     // MARK: - validation
 
+    /// Validates an extension declaration.
+    ///
+    /// - Parameters:
+    ///   - declaration: The `ExtensionDeclSyntax` representing the extension declaration.
+    ///   - context: The `MacroExpansionContext` providing the context for validation.
     static func validateExtensionDeclaration(
         _ declaration: ExtensionDeclSyntax,
         in context: some MacroExpansionContext
@@ -81,6 +105,11 @@ public struct CleanTest: MemberAttributeMacro {
         validateMembersOrder(of: declaration, in: context)
     }
 
+    /// Validates a class declaration.
+    ///
+    /// - Parameters:
+    ///   - declaration: The `ClassDeclSyntax` representing the class declaration.
+    ///   - context: The `MacroExpansionContext` providing the context for validation.
     static func validateClassDeclaration(
         _ declaration: ClassDeclSyntax,
         in context: some MacroExpansionContext
@@ -183,27 +212,38 @@ public struct CleanTest: MemberAttributeMacro {
         )
     }
 
+    /// Validates the function name of test methods by checking if they call any interface
+    /// of the System Under Test.
+    ///
+    /// - Parameters:
+    ///   - declaration: The `FunctionDeclSyntax` representing the test method to validate.
+    ///   - context: The `MacroExpansionContext` providing the context for diagnostics and analysis.
     static func validateFunctionName(
         of declaration: FunctionDeclSyntax,
         in context: some MacroExpansionContext
     ) {
         let name = declaration.name.text
-
+        
+        // Check if the function is a test method
         if name.hasPrefix("test") {
             if let body = declaration.body {
                 let (diagnostics, calls) = TestBodyAnalyser(viewMode: .fixedUp).analise(body)
 
                 context.diagnose(diagnostics)
-
+                
+                // Check if the test method calls any interface of the SUT (System Under Test)
                 if calls.isEmpty {
+                    // Report a diagnostic if the test case doesn't test any interface of the SUT
                     let diagnostic = Diagnostic(
                         node: declaration,
                         message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("Test case doesn't test any interface of the SUT.")
                     )
                     context.diagnose(diagnostic)
                 } else {
+                    // Check if the test method follows the naming convention
                     let called = calls.filter { name.hasPrefix("test_\($0)_") }
                     if called.isEmpty {
+                        // Report a diagnostic
                         let diagnostic = Diagnostic(
                             node: declaration,
                             message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("Test method should be declared with the following pattern:\n `func test_<interfaceUnderTest>_<testDescription>()`. Please rename it.")
