@@ -38,8 +38,8 @@ let package = Package(
             name: "autoMats",
             dependencies: ["autoMatsMacros"],
             swiftSettings: [
-              .enableExperimentalFeature("AccessLevelOnImport"), 
-              .enableExperimentalFeature("BodyMacros")
+                .enableExperimentalFeature("AccessLevelOnImport"),
+                .enableExperimentalFeature("BodyMacros"),
             ]
         ),
 
