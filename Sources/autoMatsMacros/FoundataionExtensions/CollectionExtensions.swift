@@ -6,7 +6,12 @@
 //
 
 extension Collection {
-    public subscript(safe index: Index) -> Element? {
+    /// Returns an element if the index is within the valid range of the collection.
+    ///
+    /// - Parameters:
+    /// - index: The index of the element to retrieve.
+    /// - Returns: The element at the specified index if within range, otherwise nil.
+    subscript(safe index: Index) -> Element? {
         indices.contains(index) ? self[index] : nil
     }
 }

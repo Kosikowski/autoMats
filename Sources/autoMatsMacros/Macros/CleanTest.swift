@@ -11,6 +11,36 @@ public import SwiftSyntax
 internal import SwiftSyntaxMacroExpansion
 public import SwiftSyntaxMacros
 
+/// ### CleanTest Macro
+/// ## Description:
+///
+/// The CleanTest macro is a diagnostic tool designed to ensure that your ``XCTestCase`` classes
+/// adhere to best practices in formatting and structure. It automates the verification
+/// of key aspects of your test cases, providing guidance and enforcement of a clean
+/// and consistent codebase for your unit tests.
+///
+/// ## Features:
+///
+/// Method Naming Conventions: Ensures all test methods within the ``XCTestCase`` class
+/// follow a consistent naming convention (e.g., prefixed with test and descriptively named).
+///
+/// TODO: Setup and Teardown Methods: Verifies the presence and proper usage of setUp()
+/// and tearDown() methods for initializing and cleaning up test environments.
+///
+/// TODO: Test Assertions: Checks that test methods contain appropriate assertions
+/// (``XCTAssert``, ``XCTAssertEqual``, etc.) to validate expected outcomes.
+///
+/// TODO: Test Coverage: Ensures that each test method is meaningful and covers
+/// a distinct aspect of the functionality being tested.
+///
+/// Clear Test Structure: Enforces a clear and logical structure within the ``XCTestCase`` class,
+/// including grouping related test methods and maintaining a clean class organization.
+///
+/// ## Usage:
+/// To use the ``CleanTest`` macro, simply apply it to your ``XCTestCase`` classes.
+/// The macro will automatically analyze the class and raise diagnostic error
+/// to ensure compliance with the outlined best practices.
+///
 public struct CleanTest: MemberAttributeMacro {
     public static func expansion(
         of node: AttributeSyntax,
@@ -69,6 +99,13 @@ public struct CleanTest: MemberAttributeMacro {
 
     // MARK: -
 
+    /// This method checks if the type name of a declaration conforms to naming conventions
+    /// by ensuring it ends with "Tests". If the type name does not end with "Tests",
+    /// a diagnostic error is raised using the provided `MacroExpansionContext`.
+    ///
+    /// - Parameters:
+    ///   - declaration: The declaration group syntax node representing the declaration to be validated.
+    ///   - context: The `MacroExpansionContext` used to report diagnostic errors.
     static func validateTypeName(
         of declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
@@ -88,6 +125,14 @@ public struct CleanTest: MemberAttributeMacro {
         )
     }
 
+    /// This method checks if the inheritance clause of a declaration includes the expected type,
+    /// specifically `XCTestCase`. If the inheritance clause does not contain `XCTestCase`,
+    /// a diagnostic error is reported using the provided `MacroExpansionContext`.
+    /// This method is used to enforce that test case classes inherit from `XCTestCase`.
+    ///
+    /// - Parameters:
+    ///   - declaration: The declaration group syntax node representing the declaration to be validated.
+    ///   - context: The `MacroExpansionContext` used to report diagnostic errors.
     static func validateInheritanceClause(
         of declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
@@ -106,6 +151,16 @@ public struct CleanTest: MemberAttributeMacro {
         }
     }
 
+    /// This method extracts the file name from the location of the declaration within the source
+    /// code and compares it with the expected file name derived from the declaration's type name.
+    /// If the file name does not match the expected convention, a diagnostic error is reported
+    /// using the provided `MacroExpansionContext`.
+    ///
+    /// This method is used to enforce consistency between file names and declaration names.
+    ///
+    /// - Parameters:
+    ///   - declaration: The declaration group syntax node representing the declaration to be validated.
+    ///   - context: The `MacroExpansionContext` used to report diagnostic errors.
     static func validateFileName(
         of declaration: DeclGroupSyntax,
         context: some MacroExpansionContext
@@ -161,6 +216,19 @@ public struct CleanTest: MemberAttributeMacro {
         }
     }
 
+    /// Validates the name and structure of a test method declaration.
+    ///
+    /// This method examines the name of the function declaration to determine if it represents
+    /// a test case. If the function is identified as a test case (prefixed with "test"),
+    /// the method analyzes its body using ``TestBodyAnalyser`` to ensure that it tests
+    /// at least one interface of the System Under Test (SUT). It reports diagnostic errors
+    /// if the test case does not call any interface of the SUT or if the naming pattern
+    /// of the test method does not follow the expected convention. Test methods are expected
+    /// to follow the pattern: `func test_<interfaceUnderTest>_<testDescription>()`.
+    ///
+    /// - Parameters:
+    ///   - declaration: The `FunctionDeclSyntax` node representing the test method declaration to be validated.
+    ///   - context: The `MacroExpansionContext` used to report diagnostic errors.
     static func validateSutDeclaration(
         of declaration: ClassDeclSyntax,
         in context: some MacroExpansionContext
@@ -187,6 +255,16 @@ public struct CleanTest: MemberAttributeMacro {
         }
     }
 
+    /// This method analyzes the order of variables and functions within the declaration
+    /// group syntax node using `ClassMembersOrderAnalyser`.
+    /// It checks if variables are declared before functions and verifies the proper organization
+    /// of test methods and helper methods within the class. Diagnostic errors are reported
+    /// using the provided `MacroExpansionContext` if any violations of the specified conventions
+    /// are detected.
+    ///
+    /// - Parameters:
+    ///   - declaration: The declaration group syntax node representing the members to be validated.
+    ///   - context: The `MacroExpansionContext` used to report diagnostic errors.
     static func validateMembersOrder(
         of declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
