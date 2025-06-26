@@ -9,6 +9,15 @@ The autoMats package provides a collection of macros designed to automate and st
 * Organizes test code within test classes or test case files.
 * Detects and reports potential issues or violations of coding conventions.
 
+## SkipAll Macro:
+
+Automatically skips the execution of all test methods within a class or extension.
+Simplifies the process of excluding specific test cases from execution.
+
+## Skip Macro:
+
+Automatically skips the execution of a specific test methods.
+
 ## Usage
 
 Installation

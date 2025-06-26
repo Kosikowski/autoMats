@@ -46,12 +46,12 @@ class TestBodyAnalyser: SyntaxVisitor {
         if node.questionOrExclamationMark?.text == "?" {
             let diagnostic = Diagnostic(
                 node: Syntax(node),
-                message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage(
+                message: SwiftSyntaxMacros.MacroExpansionErrorMessage(
                     "Optional-try expressions should not be used in tests."
                 ),
                 fixIts: [
                     FixIt(
-                        message: SwiftSyntaxMacroExpansion.MacroExpansionFixItMessage(
+                        message: SwiftSyntaxMacros.MacroExpansionFixItMessage(
                             "remove '?'"
                         ),
                         changes: [
