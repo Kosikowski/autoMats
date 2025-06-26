@@ -10,6 +10,7 @@ import SwiftSyntaxMacrosTestSupport
 import Testing
 @testable import autoMats
 @testable import autoMatsMacros
+@testable import autoMatsUtils
 
 struct MultilineEqualMacroTests {
     @Test func testMacroExpansion() {
@@ -47,6 +48,6 @@ struct MultilineEqualMacroTests {
         Hello
         World
         """
-        expectMultilineEqual(actual, expected) // Should pass
+        __expectMultilineEqual(actual, expected) // Should pass
     }
 }

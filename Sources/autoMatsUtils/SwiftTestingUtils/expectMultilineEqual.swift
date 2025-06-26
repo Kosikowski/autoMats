@@ -15,7 +15,7 @@ import XCTest
 ///   - trimWhitespace: If true, trims leading/trailing whitespace before comparison.
 ///   - file: The file where the expectation is called (for test diagnostics).
 ///   - line: The line where the expectation is called (for test diagnostics).
-func expectMultilineEqual(
+public func __expectMultilineEqual(
     _ actual: String,
     _ expected: String,
     trimWhitespace: Bool = false,

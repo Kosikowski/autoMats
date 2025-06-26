@@ -8,10 +8,19 @@
 internal import SwiftCompilerPlugin
 internal import SwiftSyntaxMacros
 
-@main
-struct syncMatPlugin: CompilerPlugin {
-    let providingMacros: [Macro.Type] = [
-        CleanTest.self,
-        ExpectMultilineEqualMacro.self,
-    ]
-}
+#if canImport(XCTest)
+    @main
+    struct syncMatPlugin: CompilerPlugin {
+        let providingMacros: [Macro.Type] = [
+            CleanTest.self,
+            ExpectMultilineEqualMacro.self,
+        ]
+    }
+#else
+    @main
+    struct syncMatPlugin: CompilerPlugin {
+        let providingMacros: [Macro.Type] = [
+        ]
+    }
+
+#endif

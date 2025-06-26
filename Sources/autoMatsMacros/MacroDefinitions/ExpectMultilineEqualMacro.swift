@@ -24,6 +24,6 @@ public struct ExpectMultilineEqualMacro: ExpressionMacro {
         let trimWhitespace = args.count > 2 ? args[2].expression : ExprSyntax("false")
         let sourceLocation = ExprSyntax(".init(fileID: #fileID, line: #line)")
 
-        return ExprSyntax("expectMultilineEqual(\(actual), \(expected), trimWhitespace: \(trimWhitespace), sourceLocation: \(sourceLocation))")
+        return ExprSyntax("__expectMultilineEqual(\(actual), \(expected), trimWhitespace: \(trimWhitespace), sourceLocation: \(sourceLocation))")
     }
 }
