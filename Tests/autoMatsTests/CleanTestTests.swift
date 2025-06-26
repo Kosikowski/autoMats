@@ -5,12 +5,12 @@
 //  Created by Mateusz Kosikowski on 23/05/2024.
 //
 
-internal import SwiftSyntaxMacros
-internal import SwiftSyntaxMacrosTestSupport
-internal import XCTest
-@testable internal import autoMatsMacros
+import SwiftSyntaxMacros
+import SwiftSyntaxMacrosTestSupport
+import XCTest
+@testable import autoMatsMacros
 
-class CleanTestTests: XCTestCase {
+final class CleanTestTests: XCTestCase {
     func test_emptyClassDeclaration() throws {
         #if canImport(autoMatsMacros)
             assertMacroExpansion(

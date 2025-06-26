@@ -12,5 +12,6 @@ internal import SwiftSyntaxMacros
 struct syncMatPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         CleanTest.self,
+        ExpectMultilineEqualMacro.self,
     ]
 }

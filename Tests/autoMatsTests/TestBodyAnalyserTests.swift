@@ -5,11 +5,12 @@
 //  Created by Mateusz Kosikowski on 23/05/2024.
 //
 
-internal import SwiftParser
-internal import SwiftSyntaxMacros
-internal import SwiftSyntaxMacrosTestSupport
-internal import XCTest
-@testable internal import autoMatsMacros
+import SwiftParser
+import SwiftSyntaxMacros
+import SwiftSyntaxMacrosTestSupport
+import XCTest
+@testable import autoMatsMacros
+@testable import autoMatsUtils
 
 class TestBodyAnalyserTests: XCTestCase {
     func test_analise_detectsOptionalTryExpressions() throws {

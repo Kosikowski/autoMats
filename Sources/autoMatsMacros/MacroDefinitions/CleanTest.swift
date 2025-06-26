@@ -10,6 +10,7 @@ internal import SwiftDiagnostics
 public import SwiftSyntax
 internal import SwiftSyntaxMacroExpansion
 public import SwiftSyntaxMacros
+internal import autoMatsUtils
 
 /// ### CleanTest Macro
 /// ## Description:
@@ -42,7 +43,6 @@ public import SwiftSyntaxMacros
 /// to ensure compliance with the outlined best practices.
 ///
 public struct CleanTest: MemberAttributeMacro {
-    
     /// Validate and process the declaration block for the `@CleanTest` macro.
     /// - Parameters:
     ///   - declaration: The declaration group syntax node representing the test class or extension.
@@ -56,7 +56,6 @@ public struct CleanTest: MemberAttributeMacro {
         providingAttributesFor member: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [AttributeSyntax] {
-
         // Ensure that the member being processed matches the first member in the declaration block.
         // This check is necessary because this macro is invoked for every member of the class.
         // We perform validation for the entire class as soon as this method is invoked for the first
@@ -79,10 +78,10 @@ public struct CleanTest: MemberAttributeMacro {
             // If it's neither an extension nor a class declaration, raise a diagnostic error
             context.diagnose(Diagnostic(
                 node: node,
-                message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("@CleanTest can only be used in class declarations subclassing XCTestCase, or extensions.")
+                message: SwiftSyntaxMacros.MacroExpansionErrorMessage("@CleanTest can only be used in class declarations subclassing XCTestCase, or extensions.")
             ))
         }
-        
+
         // Return empty array, as this macro is diagnostic macro only and it does not generate any code.
         return []
     }
@@ -149,7 +148,7 @@ public struct CleanTest: MemberAttributeMacro {
         context.diagnose(
             Diagnostic(
                 node: declaration,
-                message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("\(name) name must end with \"Tests\".")
+                message: SwiftSyntaxMacros.MacroExpansionErrorMessage("\(name) name must end with \"Tests\".")
             )
         )
     }
@@ -173,7 +172,7 @@ public struct CleanTest: MemberAttributeMacro {
             context.diagnose(
                 Diagnostic(
                     node: declaration,
-                    message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("A test class \(declaration.typeName!) must inherit from XCTestCase.")
+                    message: SwiftSyntaxMacros.MacroExpansionErrorMessage("A test class \(declaration.typeName!) must inherit from XCTestCase.")
                 )
             )
             return
@@ -207,7 +206,7 @@ public struct CleanTest: MemberAttributeMacro {
         context.diagnose(
             Diagnostic(
                 node: declaration,
-                message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("Incorrect file name \"\(file)\", for the declaration of \"\(declaration.typeName ?? "")\"")
+                message: SwiftSyntaxMacros.MacroExpansionErrorMessage("Incorrect file name \"\(file)\", for the declaration of \"\(declaration.typeName ?? "")\"")
             )
         )
     }
@@ -223,20 +222,20 @@ public struct CleanTest: MemberAttributeMacro {
         in context: some MacroExpansionContext
     ) {
         let name = declaration.name.text
-        
+
         // Check if the function is a test method
         if name.hasPrefix("test") {
             if let body = declaration.body {
                 let (diagnostics, calls) = TestBodyAnalyser(viewMode: .fixedUp).analise(body)
 
                 context.diagnose(diagnostics)
-                
+
                 // Check if the test method calls any interface of the SUT (System Under Test)
                 if calls.isEmpty {
                     // Report a diagnostic if the test case doesn't test any interface of the SUT
                     let diagnostic = Diagnostic(
                         node: declaration,
-                        message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("Test case doesn't test any interface of the SUT.")
+                        message: SwiftSyntaxMacros.MacroExpansionErrorMessage("Test case doesn't test any interface of the SUT.")
                     )
                     context.diagnose(diagnostic)
                 } else {
@@ -246,7 +245,7 @@ public struct CleanTest: MemberAttributeMacro {
                         // Report a diagnostic
                         let diagnostic = Diagnostic(
                             node: declaration,
-                            message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("Test method should be declared with the following pattern:\n `func test_<interfaceUnderTest>_<testDescription>()`. Please rename it.")
+                            message: SwiftSyntaxMacros.MacroExpansionErrorMessage("Test method should be declared with the following pattern:\n `func test_<interfaceUnderTest>_<testDescription>()`. Please rename it.")
                         )
                         context.diagnose(diagnostic)
                     }
@@ -281,7 +280,7 @@ public struct CleanTest: MemberAttributeMacro {
                 context.diagnose(
                     Diagnostic(
                         node: declaration,
-                        message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("Class name \(sutTypeFromClassName)Tests doesn't match the type of the SUT.")
+                        message: SwiftSyntaxMacros.MacroExpansionErrorMessage("Class name \(sutTypeFromClassName)Tests doesn't match the type of the SUT.")
                     )
                 )
             }
@@ -289,7 +288,7 @@ public struct CleanTest: MemberAttributeMacro {
             context.diagnose(
                 Diagnostic(
                     node: declaration,
-                    message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("Test class \(declaration.typeName ?? "") doesn't have SUT declaration.")
+                    message: SwiftSyntaxMacros.MacroExpansionErrorMessage("Test class \(declaration.typeName ?? "") doesn't have SUT declaration.")
                 )
             )
         }
