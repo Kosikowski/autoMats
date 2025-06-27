@@ -11,7 +11,7 @@ extension String {
     /// - Parameters:
     ///   - prefix: The prefix to be removed.
     /// - Returns: A new string with the prefix removed if it matches, otherwise the original string.
-    func deletingPrefix(_ prefix: String) -> String {
+    public func deletingPrefix(_ prefix: String) -> String {
         guard hasPrefix(prefix) else { return self }
         return String(dropFirst(prefix.count))
     }
@@ -21,7 +21,7 @@ extension String {
     /// - Parameters:
     ///   - suffix: The suffix to be removed.
     /// - Returns: A new string with the suffix removed if it matches, otherwise the original string.
-    func deletingSuffix(_ suffix: String) -> String {
+    public func deletingSuffix(_ suffix: String) -> String {
         guard hasSuffix(suffix) else { return self }
         return String(dropLast(suffix.count))
     }

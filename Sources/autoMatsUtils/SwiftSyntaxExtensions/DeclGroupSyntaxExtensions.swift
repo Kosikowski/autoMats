@@ -5,26 +5,26 @@
 //  Created by Mateusz Kosikowski on 19/05/2024.
 //
 
-internal import SwiftSyntax
+public import SwiftSyntax
 
 extension DeclGroupSyntax {
-    var isClassDecl: Bool {
+    public var isClassDecl: Bool {
         kind == .classDecl
     }
 
-    var isExtensionDecl: Bool {
+    public var isExtensionDecl: Bool {
         kind == .extensionDecl
     }
 
-    var inheritanceTypeNames: [String] {
+    public var inheritanceTypeNames: [String] {
         inheritanceClause?.inheritanceTypeNames ?? []
     }
 
-    var isProtocolDecl: Bool {
+    public var isProtocolDecl: Bool {
         kind == .protocolDecl
     }
 
-    var typeName: String? {
+    public var typeName: String? {
         if let name = self.as(ActorDeclSyntax.self)?.typeName {
             return name
         }

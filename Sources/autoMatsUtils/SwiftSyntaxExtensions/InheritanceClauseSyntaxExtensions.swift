@@ -5,10 +5,10 @@
 //  Created by Mateusz Kosikowski on 19/05/2024.
 //
 
-internal import SwiftSyntax
+public import SwiftSyntax
 
 extension InheritanceClauseSyntax {
-    var inheritanceTypeNames: [String] {
+    public var inheritanceTypeNames: [String] {
         inheritedTypes.compactMap { $0.type.as(IdentifierTypeSyntax.self)?.name.text }
     }
 }

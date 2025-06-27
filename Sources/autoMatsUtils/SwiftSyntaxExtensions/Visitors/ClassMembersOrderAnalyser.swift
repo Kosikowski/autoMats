@@ -5,8 +5,8 @@
 //  Created by Mateusz Kosikowski on 27/05/2024.
 //
 
-internal import SwiftDiagnostics
-internal import SwiftSyntax
+public import SwiftDiagnostics
+public import SwiftSyntax
 internal import SwiftSyntaxMacroExpansion
 internal import SwiftSyntaxMacros
 
@@ -22,7 +22,7 @@ internal import SwiftSyntaxMacros
 /// The analysis results in a collection of diagnostics, highlighting any violations
 /// of the defined conventions.
 ///
-class ClassMembersOrderAnalyser: SyntaxVisitor {
+public final class ClassMembersOrderAnalyser: SyntaxVisitor {
     private var diagnostics: [Diagnostic] = []
     private var lastMARKSection: String? = nil
     private var seenFunction = false
@@ -37,12 +37,12 @@ class ClassMembersOrderAnalyser: SyntaxVisitor {
     /// - Parameters:
     ///   - decl: The `VariableDeclSyntax` node representing the variable declaration being visited.
     /// - Returns: A `SyntaxVisitorContinueKind` indicating whether to continue visiting the children of the current node.
-    override func visit(_ decl: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+    override public func visit(_ decl: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
         findMarkComment(for: decl)
         if lastMARKSection != nil || seenFunction {
             diagnostics.append(Diagnostic(
                 node: decl,
-                message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("All variables should be declared at the beginning of the class.")
+                message: SwiftSyntaxMacros.MacroExpansionErrorMessage("All variables should be declared at the beginning of the class.")
             ))
         }
         return .skipChildren
@@ -64,7 +64,7 @@ class ClassMembersOrderAnalyser: SyntaxVisitor {
     ///   - decl: The `FunctionDeclSyntax` node representing the function declaration being visited.
     /// - Returns: A `SyntaxVisitorContinueKind` indicating whether to continue visiting the children
     /// of the current node.
-    override func visit(_ decl: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+    override public func visit(_ decl: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
         findMarkComment(for: decl)
         seenFunction = true
         let components = decl.name.text.components(separatedBy: "_")
@@ -76,7 +76,7 @@ class ClassMembersOrderAnalyser: SyntaxVisitor {
             {
                 diagnostics.append(Diagnostic(
                     node: decl,
-                    message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("The \(decl.name.text) method must belong to a \"// MARK: - \(section) <optinoalComment>\" section.")
+                    message: SwiftSyntaxMacros.MacroExpansionErrorMessage("The \(decl.name.text) method must belong to a \"// MARK: - \(section) <optinoalComment>\" section.")
                 ))
             }
 
@@ -86,13 +86,13 @@ class ClassMembersOrderAnalyser: SyntaxVisitor {
         {
             diagnostics.append(Diagnostic(
                 node: decl,
-                message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("The \(decl.name.text) helper method must be in a \"// MARK: - helper methods\" section, or moved to a designated extension.")
+                message: SwiftSyntaxMacros.MacroExpansionErrorMessage("The \(decl.name.text) helper method must be in a \"// MARK: - helper methods\" section, or moved to a designated extension.")
             ))
         }
         return .skipChildren
     }
 
-    func analise(_ tree: some SyntaxProtocol) -> [Diagnostic] {
+    public func analise(_ tree: some SyntaxProtocol) -> [Diagnostic] {
         walk(tree)
         return diagnostics
     }
@@ -120,7 +120,7 @@ class ClassMembersOrderAnalyser: SyntaxVisitor {
                 if !text.contains("// MARK: - ") {
                     let diagn = Diagnostic(
                         node: decl,
-                        message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage("The MARK comment should be formatted as : \"// MARK: - `interfaceUderTest` `optional description`\"")
+                        message: SwiftSyntaxMacros.MacroExpansionErrorMessage("The MARK comment should be formatted as : \"// MARK: - `interfaceUderTest` `optional description`\"")
                     )
                     diagnostics.append(diagn)
                 } else if let sectionaName = text.deletingPrefix("// MARK: - ").components(separatedBy: " ").first {

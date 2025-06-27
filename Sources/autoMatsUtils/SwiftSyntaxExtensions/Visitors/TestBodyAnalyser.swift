@@ -5,8 +5,8 @@
 //  Created by Mateusz Kosikowski on 23/05/2024.
 //
 
-internal import SwiftDiagnostics
-internal import SwiftSyntax
+public import SwiftDiagnostics
+public import SwiftSyntax
 internal import SwiftSyntaxMacroExpansion
 internal import SwiftSyntaxMacros
 
@@ -22,13 +22,13 @@ internal import SwiftSyntaxMacros
 /// Additionally, it checks for and flags any usage of optional-try to promote test failure
 /// on pottential error.
 ///
-class TestBodyAnalyser: SyntaxVisitor {
+public final class TestBodyAnalyser: SyntaxVisitor {
     private var diagnostics: [Diagnostic] = []
     private var sutCalls: Set<String> = []
     private var sut = false
 
     /// This method is called when traversing the syntax tree and encountering an expression.
-    override func visit(_ node: DeclReferenceExprSyntax) -> SyntaxVisitorContinueKind {
+    override public func visit(_ node: DeclReferenceExprSyntax) -> SyntaxVisitorContinueKind {
         let name = node.baseName.text
         if name == "sut" { // detects sut
             sut = true
@@ -42,16 +42,16 @@ class TestBodyAnalyser: SyntaxVisitor {
     }
 
     /// This method is called when traversing the syntax tree and encountering a try expression.
-    override func visit(_ node: TryExprSyntax) -> SyntaxVisitorContinueKind {
+    override public func visit(_ node: TryExprSyntax) -> SyntaxVisitorContinueKind {
         if node.questionOrExclamationMark?.text == "?" {
             let diagnostic = Diagnostic(
                 node: Syntax(node),
-                message: SwiftSyntaxMacroExpansion.MacroExpansionErrorMessage(
+                message: SwiftSyntaxMacros.MacroExpansionErrorMessage(
                     "Optional-try expressions should not be used in tests."
                 ),
                 fixIts: [
                     FixIt(
-                        message: SwiftSyntaxMacroExpansion.MacroExpansionFixItMessage(
+                        message: SwiftSyntaxMacros.MacroExpansionFixItMessage(
                             "remove '?'"
                         ),
                         changes: [
@@ -73,7 +73,7 @@ class TestBodyAnalyser: SyntaxVisitor {
     /// - Parameters:
     ///   - tree: The syntax tree conforming to a `SyntaxProtocol` to be analyzed.
     /// - Returns: A tuple containing an array of diagnostics and a set of strings representing SUT calls.
-    func analise(_ tree: some SyntaxProtocol) -> ([Diagnostic], Set<String>) {
+    public func analise(_ tree: some SyntaxProtocol) -> ([Diagnostic], Set<String>) {
         walk(tree)
         return (diagnostics, sutCalls)
     }

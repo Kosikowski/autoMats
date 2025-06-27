@@ -5,22 +5,22 @@
 //  Created by Mateusz Kosikowski on 19/05/2024.
 //
 
-internal import SwiftSyntax
+public import SwiftSyntax
 
 extension ClassDeclSyntax {
-    var members: [MemberBlockItemSyntax] {
+    public var members: [MemberBlockItemSyntax] {
         memberBlock.members.map { $0 }
     }
 
-    var variableDecls: [VariableDeclSyntax] {
+    public var variableDecls: [VariableDeclSyntax] {
         members.compactMap { $0.decl.as(VariableDeclSyntax.self) }
     }
 
-    var functions: [FunctionDeclSyntax] {
+    public var functions: [FunctionDeclSyntax] {
         members.compactMap { $0.decl.as(FunctionDeclSyntax.self) }
     }
 
-    var typeName: String? {
+    public var typeName: String? {
         name.text
     }
 }
